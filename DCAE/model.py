@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -12,7 +13,7 @@ class DCAE(nn.Module):
 
         # Encoder
         self.encoder = nn.Sequential(
-            nn.Conv1d(1, 32, kernel_size=10, stride=1, padding=0),  # input is 1 x 10, output is 32 x 1
+            nn.Conv1d(3, 32, kernel_size=10, stride=1, padding=0),  # input is 1 x 10, output is 32 x 1
             nn.ReLU(True),
             nn.Conv1d(32, 64, kernel_size=10, stride=1, padding=0),  # output is 64 x 1
             nn.ReLU(True),
@@ -132,6 +133,8 @@ def update_cluster_center(encoded_features):
 
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 num_epochs = 10
+processed_dataset = np.load('processed_dataset.npy')
+dataloader = torch.tensor(processed_dataset)
 # 训练循环
 for epoch in range(num_epochs):
     for data in dataloader:
