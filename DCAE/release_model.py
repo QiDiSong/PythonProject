@@ -180,6 +180,7 @@ for epoch in range(num_epochs):
         lambda_val = 0.1
         loss, rec_loss, clust_loss = deep_clustering_loss(reconstructed_x, x, encoded_features,
                                                           cluster_centers, lambda_val)
+        print(epoch, loss.item())
         # 后向传播
         loss.backward()
         # 更新权重
