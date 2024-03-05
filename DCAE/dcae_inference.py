@@ -58,7 +58,7 @@ imshow(torchvision.utils.make_grid(images))
 print('GroundTruth: ', ' '.join('%5s' % labels[j].item() for j in range(4)))
 
 # 预测结果
-outputs = net(images)
+outputs = net(images.view(-1, 1, 784))
 _, predicted = torch.max(outputs, 1)
 
 print('Predicted: ', ' '.join('%5s' % predicted[j].item()
