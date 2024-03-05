@@ -7,8 +7,8 @@ import torchvision
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import torchvision.transforms as transforms
-
-import matplotlib.pyplot as pltfrom torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
 
 feature_length = 784
 in_channels = 1
@@ -29,12 +29,12 @@ class DCAE(nn.Module):
             nn.Flatten(),
             nn.Linear(128 * (feature_length - 9 * 4), 384),
             nn.ReLU(),
-            nn.Linear(384, 5),
+            nn.Linear(384, 10),
             nn.ReLU()
         )
         # 解码器部分
         self.decoder = nn.Sequential(
-            nn.Linear(5, 384),
+            nn.Linear(10, 384),
             nn.ReLU(),
             nn.Linear(384, 128 * (feature_length - 9 * 4)),
             nn.ReLU(),
@@ -51,7 +51,7 @@ class DCAE(nn.Module):
 
     def forward(self, x):
         x = self.encoder(x)
-        x = self.decoder(x)
+        # x = self.decoder(x)
         return x
 
 
@@ -84,44 +84,53 @@ testloader = DataLoader(testset, batch_size=64, shuffle=False)
 
 # 定义损失函数和优化器
 criterion = nn.MSELoss()
+criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# 训练模型
-num_epochs = 1  # 为了快速演示，实际可能需要更多的epochs
-for epoch in range(num_epochs):
-    running_loss = 0.0
-    for batch, data in enumerate(testloader):
-        inputs, _ = data
-        inputs = inputs.view(-1, 1, 784)  # 调整输入以匹配模型的期望形状
 
-        optimizer.zero_grad()
+if __name__ == '__main__':
+    # 训练模型
+    num_epochs = 10  # 为了快速演示，实际可能需要更多的epochs
+    for epoch in range(num_epochs):
+        running_loss = 0.0
+        for batch, data in enumerate(trainloader):
+            inputs, labels = data
+            inputs = inputs.view(-1, 1, 784)  # 调整输入以匹配模型的期望形状
 
-        outputs = model(inputs)
-        loss = criterion(outputs, inputs)
-        loss.backward()
-        optimizer.step()
+            optimizer.zero_grad()
 
-        running_loss += loss.item()
-        print("Batch: ", batch, " Loss:", running_loss / (batch + 1))
-    print(f'Epoch {epoch + 1}, Loss: {running_loss / len(testloader)}')
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
 
-print('Finished Training')
+            running_loss += loss.item()
+            print("Batch: ", batch, " Loss:", running_loss / (batch + 1))
+        print(f'Epoch {epoch + 1}, Loss: {running_loss / len(trainloader)}')
 
-# 选择部分数据进行测试和可视化
-dataiter = iter(testloader)
-images, labels = next(dataiter)
-images = images.view(-1, 1, 784)  # 调整形状以匹配模型输入
-outputs = model(images)
+    print('Finished Training')
+    PATH = './dcae_encoder.pth'
+    torch.save(model.state_dict(), PATH)
 
-# 可视化第一张图像和其重建结果
-plt.figure(figsize=(9, 3))
-plt.subplot(1, 2, 1)
-plt.imshow(images[0].view(28, 28).detach().numpy(), cmap='gray')
-plt.title('Original Image')
-plt.subplot(1, 2, 2)
-plt.imshow(outputs[0].view(28, 28).detach().numpy(), cmap='gray')
-plt.title('Reconstructed Image')
-plt.show()
+
+
+
+#
+# # 选择部分数据进行测试和可视化
+# dataiter = iter(testloader)
+# images, labels = next(dataiter)
+# images = images.view(-1, 1, 784)  # 调整形状以匹配模型输入
+# outputs = model(images)
+#
+# # 可视化第一张图像和其重建结果
+# plt.figure(figsize=(9, 3))
+# plt.subplot(1, 2, 1)
+# plt.imshow(images[0].view(28, 28).detach().numpy(), cmap='gray')
+# plt.title('Original Image')
+# plt.subplot(1, 2, 2)
+# plt.imshow(outputs[0].view(28, 28).detach().numpy(), cmap='gray')
+# plt.title('Reconstructed Image')
+# plt.show()
 
 
 

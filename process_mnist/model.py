@@ -6,6 +6,8 @@ import torch.optim as optim
 import torch.nn as nn
 import torch.nn.functional as F
 from center import init_cluster_centers, train_with_clustering
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 # MNIST数据集的预处理
@@ -69,7 +71,6 @@ model = DCAE()
 print(model)
 
 
-
 # 实例化模型、定义损失函数和优化器
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -96,13 +97,13 @@ def train(model, trainloader, optimizer, cluster_centers, epochs=10, lambda_clus
             running_loss += total_loss.item()
         print(f'Epoch {epoch+1}, Loss: {running_loss/len(trainloader)}')
 
+
 # 调用训练函数
 train(model, trainloader, optimizer, cluster_centers)
 
 
 
-import matplotlib.pyplot as plt
-import numpy as np
+
 
 
 def visualize_clusters(encoder, data_loader, cluster_centers, n_clusters=10, n_images=5):
