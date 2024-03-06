@@ -37,6 +37,17 @@ def read_data(startyear, endyear, path, features, rows, cols):
     return dataset
 
 
+def my_process(dataset):
+    for i in range(len(dataset)):
+        for j in range(len(dataset[0])):
+            for k in range(len(dataset[i][j])):
+                if dataset[i][j][k] < 1:
+                    dataset[i][j][k] = 1
+                if dataset[i][j][k] > 365:
+                    dataset[i][j][k] = 365
+    return dataset
+
+
 def process(dataset):
     note = [0] * len(dataset)  # 初始化note数组，全部为0，用于标记是否删除某个dataset[i]
 
@@ -98,18 +109,6 @@ def paint_result(note, res, K, row, col):
     plt.show()
 
 
-dataset = read_data(2001, 2017, "cluster_data", ["DO", "GO", "PEAK"], 435, 1226)
-# 输出基本特征
-print("数据集形状:", len(dataset), "行,", len(dataset[0]), "个时间点,", len(dataset[0][0]), "个数据特征")
-print("总计数据点数:", len(dataset) * len(dataset[0]))
-# 预处理
-processed_dataset, note = process(dataset)
-print("数据集形状:", len(processed_dataset), "行,", len(processed_dataset[0]), "个时间点,", len(processed_dataset[0][0]), "个数据特征")
-print("总计数据点数:", len(processed_dataset) * len(processed_dataset[0]))
-
-
-
-
 if __name__ == '__main__':
 
     # 读取三个特征 + 预处理
@@ -119,8 +118,10 @@ if __name__ == '__main__':
     print("数据集形状:", len(dataset), "行,", len(dataset[0]), "个时间点,", len(dataset[0][0]), "个数据特征")
     print("总计数据点数:", len(dataset) * len(dataset[0]))
     # 预处理
-    processed_dataset, note = process(dataset)
-    # np.save('processed_dataset.npy', processed_dataset)
+    # processed_dataset, note = process(dataset)
+    processed_dataset = my_process(dataset)
+    processed_dataset = np.transpose(processed_dataset, (0, 2, 1))
+    np.save('processed_dataset.npy', processed_dataset)
     # loaded_dataset = np.load('processed_dataset.npy')
     print("数据集形状:", len(processed_dataset), "行,", len(processed_dataset[0]), "个时间点,", len(processed_dataset[0][0]), "个数据特征")
     print("总计数据点数:", len(processed_dataset) * len(processed_dataset[0]))
@@ -131,3 +132,4 @@ if __name__ == '__main__':
     # paint_result(note, res, 5, 435, 1226)
 
 
+input_shape = [435, 1226, 3, 17]
