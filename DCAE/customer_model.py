@@ -216,6 +216,7 @@ if __name__ == '__main__':
         cluster_centers = update_cluster_center(cluster_centers)
         print(f'Epoch {epoch + 1}, Loss: {running_loss / 5340}')
 
+
     print('Finished Training')
     PATH = './dcae_encoder_decoder.pth'
     torch.save(model.state_dict(), PATH)
