@@ -54,8 +54,8 @@ def imshow(img):
     plt.show()
 
 
-imshow(torchvision.utils.make_grid(images))
-print('GroundTruth: ', ' '.join('%5s' % labels[j].item() for j in range(4)))
+# imshow(torchvision.utils.make_grid(images))
+# print('GroundTruth: ', ' '.join('%5s' % labels[j].item() for j in range(4)))
 
 # 预测结果
 outputs = net(images.view(-1, 1, 784))
