@@ -11,7 +11,7 @@ import random
 # 加载模型
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net = DCAE()
-net.load_state_dict(torch.load("./dcae_encoder_best.pth", map_location=device))
+net.load_state_dict(torch.load("./dcae_encoder_decoder.pth", map_location=device))
 net.to(device)
 print(net.parameters())
 

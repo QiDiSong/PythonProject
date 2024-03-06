@@ -98,18 +98,6 @@ def paint_result(note, res, K, row, col):
     plt.show()
 
 
-dataset = read_data(2001, 2017, "cluster_data", ["DO", "GO", "PEAK"], 435, 1226)
-# 输出基本特征
-print("数据集形状:", len(dataset), "行,", len(dataset[0]), "个时间点,", len(dataset[0][0]), "个数据特征")
-print("总计数据点数:", len(dataset) * len(dataset[0]))
-# 预处理
-processed_dataset, note = process(dataset)
-print("数据集形状:", len(processed_dataset), "行,", len(processed_dataset[0]), "个时间点,", len(processed_dataset[0][0]), "个数据特征")
-print("总计数据点数:", len(processed_dataset) * len(processed_dataset[0]))
-
-
-
-
 if __name__ == '__main__':
 
     # 读取三个特征 + 预处理
@@ -120,7 +108,8 @@ if __name__ == '__main__':
     print("总计数据点数:", len(dataset) * len(dataset[0]))
     # 预处理
     processed_dataset, note = process(dataset)
-    # np.save('processed_dataset.npy', processed_dataset)
+    processed_dataset = np.transpose(processed_dataset, (0, 2, 1))
+    np.save('processed_dataset.npy', processed_dataset)
     # loaded_dataset = np.load('processed_dataset.npy')
     print("数据集形状:", len(processed_dataset), "行,", len(processed_dataset[0]), "个时间点,", len(processed_dataset[0][0]), "个数据特征")
     print("总计数据点数:", len(processed_dataset) * len(processed_dataset[0]))

@@ -206,7 +206,7 @@ if __name__ == '__main__':
             lambda_val = 0.1
             loss, rec_loss, clust_loss = deep_clustering_loss(reconstructed_inputs, inputs, encoded_features,
                                                               cluster_centers, lambda_val)
-            print(epoch, loss.item())
+            # print(epoch, loss.item())
             loss.backward()
             optimizer.step()
 
